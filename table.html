@@ -18,10 +18,21 @@
     <label>Name<br><input type="text" id="nameInput"></label><br>
     <label>ID<br><input type="text" id="idInput"></label><br>
     <label>Marks<br><input type="text" id="marksInput"></label><br>
+    <button onclick="addStudent()">Add</button>
 
     <!-- Modify Section -->
     <h3>Modify</h3>
     <label>ID<br><input type="text" id="modifyIdInput"></label><br>
+    <button onclick="openModifyPopup()">Modify</button>
+
+    <!-- Popup Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3>Modify</h3>
+            <label>Marks<br><input type="text" id="editMarks"></label><br>
+            <button onclick="updateStudent()">Update</button>
+        </div>
+    </div>
 
     <script>
         let table = document.getElementById('studentTable');
