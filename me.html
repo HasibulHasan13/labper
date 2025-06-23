@@ -62,7 +62,35 @@
     <script>
         
 
-        
+        function openModifyPopup() {
+            const idToModify = document.getElementById('modifyIdInput').value;
+            latestRow = null;
+            for (let i = 1; i < table.rows.length; i++) {
+                if (table.rows[i].cells[1].innerText === idToModify) {
+                    latestRow = table.rows[i];
+                    document.getElementById('editMarks').value = latestRow.cells[2].innerText;
+                    document.getElementById('editModal').style.display = "block";
+                    return;
+                }
+            }
+            alert("ID not found!");
+        }
+
+        function updateStudent() {
+            if (latestRow) {
+                latestRow.cells[2].innerText = document.getElementById('editMarks').value;
+                document.getElementById('editModal').style.display = "none";
+                latestRow = null;
+            }
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                modal.style.display = "none";
+                latestRow = null;
+            }
+        }
     </script>
 </body>
 </html>
