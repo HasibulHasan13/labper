@@ -50,6 +50,8 @@
 </head>
 <body>
 
+    <h2>Student Manager</h2>
+
     <table id="studentTable">
         <tr>
             <th>Name</th>
@@ -57,54 +59,81 @@
             <th>Marks</th>
         </tr>
     </table>
-    <br><br>
+    <br>
+
     <!-- Add Section -->
     <label>Name<br><input type="text" id="nameInput"></label><br>
     <label>ID<br><input type="text" id="idInput"></label><br>
     <label>Marks<br><input type="text" id="marksInput"></label><br>
     <button onclick="addStudent()">Add</button>
 
+    <br><br>
+
     <!-- Modify Section -->
-    <h3>Modify</h3>
+    <h3>Modify Marks</h3>
     <label>ID<br><input type="text" id="modifyIdInput"></label><br>
     <button onclick="openModifyPopup()">Modify</button>
 
     <!-- Popup Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
-            <h3>Modify</h3>
+            <h3>Modify Marks</h3>
             <label>Marks<br><input type="text" id="editMarks"></label><br>
             <button onclick="updateStudent()">Update</button>
         </div>
     </div>
 
+    <br><br>
+
     <script>
         let table = document.getElementById('studentTable');
         let latestRow = null;
+        let students = [];
+
+        window.onload = function () {
+            const savedData = localStorage.getItem("students");
+            if (savedData) {
+                students = JSON.parse(savedData);
+                students.forEach(student => addRowToTable(student));
+            }
+        };
 
         function addStudent() {
-            const name = document.getElementById('nameInput').value;
-            const id = document.getElementById('idInput').value;
-            const marks = document.getElementById('marksInput').value;
+            const name = document.getElementById('nameInput').value.trim();
+            const id = document.getElementById('idInput').value.trim();
+            const marks = document.getElementById('marksInput').value.trim();
 
             if (!name || !id || !marks) {
                 alert("Please fill all fields");
                 return;
             }
 
-            const row = table.insertRow();
-            row.insertCell(0).innerText = name;
-            row.insertCell(1).innerText = id;
-            row.insertCell(2).innerText = marks;
+            // Prevent duplicate IDs
+            if (students.some(s => s.id === id)) {
+                alert("ID already exists!");
+                return;
+            }
+
+            const student = { name, id, marks };
+            students.push(student);
+            localStorage.setItem("students", JSON.stringify(students));
+
+            addRowToTable(student);
 
             document.getElementById('nameInput').value = "";
             document.getElementById('idInput').value = "";
             document.getElementById('marksInput').value = "";
+        }
 
+        function addRowToTable(student) {
+            const row = table.insertRow();
+            row.insertCell(0).innerText = student.name;
+            row.insertCell(1).innerText = student.id;
+            row.insertCell(2).innerText = student.marks;
         }
 
         function openModifyPopup() {
-            const idToModify = document.getElementById('modifyIdInput').value;
+            const idToModify = document.getElementById('modifyIdInput').value.trim();
             latestRow = null;
             for (let i = 1; i < table.rows.length; i++) {
                 if (table.rows[i].cells[1].innerText === idToModify) {
@@ -119,7 +148,15 @@
 
         function updateStudent() {
             if (latestRow) {
-                latestRow.cells[2].innerText = document.getElementById('editMarks').value;
+                const updatedMarks = document.getElementById('editMarks').value.trim();
+                latestRow.cells[2].innerText = updatedMarks;
+
+                const id = latestRow.cells[1].innerText;
+                students = students.map(student =>
+                    student.id === id ? { ...student, marks: updatedMarks } : student
+                );
+                localStorage.setItem("students", JSON.stringify(students));
+
                 document.getElementById('editModal').style.display = "none";
                 latestRow = null;
             }
@@ -130,6 +167,16 @@
             if (event.target === modal) {
                 modal.style.display = "none";
                 latestRow = null;
+            }
+        }
+
+        function clearAllData() {
+            if (confirm("Are you sure you want to delete all records?")) {
+                localStorage.removeItem("students");
+                while (table.rows.length > 1) {
+                    table.deleteRow(1);
+                }
+                students = [];
             }
         }
     </script>
