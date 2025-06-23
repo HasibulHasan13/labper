@@ -6,12 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    </head>
-<body>
-
-  <h3>Student Record</h3>
-
-  <table id="studentTable">
+    <table id="studentTable">
         <tr>
             <th>Name</th>
             <th>ID</th>
@@ -23,9 +18,35 @@
     <label>Name<br><input type="text" id="nameInput"></label><br>
     <label>ID<br><input type="text" id="idInput"></label><br>
     <label>Marks<br><input type="text" id="marksInput"></label><br>
+
     <!-- Modify Section -->
     <h3>Modify</h3>
     <label>ID<br><input type="text" id="modifyIdInput"></label><br>
 
+    <script>
+        let table = document.getElementById('studentTable');
+        let latestRow = null;
+
+        function addStudent() {
+            const name = document.getElementById('nameInput').value;
+            const id = document.getElementById('idInput').value;
+            const marks = document.getElementById('marksInput').value;
+
+            if (!name || !id || !marks) {
+                alert("Please fill all fields");
+                return;
+            }
+
+            const row = table.insertRow();
+            row.insertCell(0).innerText = name;
+            row.insertCell(1).innerText = id;
+            row.insertCell(2).innerText = marks;
+
+            document.getElementById('nameInput').value = "";
+            document.getElementById('idInput').value = "";
+            document.getElementById('marksInput').value = "";
+
+        }
+    </script>
 </body>
 </html>
